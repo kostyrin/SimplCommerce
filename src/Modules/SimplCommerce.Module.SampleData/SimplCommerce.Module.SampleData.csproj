@@ -2,7 +2,17 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\SimplCommerce.Infrastructure\SimplCommerce.Infrastructure.csproj" />
+    <ProjectReference Include="..\SimplCommerce.Module.Catalog\SimplCommerce.Module.Catalog.csproj" />
     <ProjectReference Include="..\SimplCommerce.Module.Core\SimplCommerce.Module.Core.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="SampleContent\DIY\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="1.50.5" />
+    <PackageReference Include="NickBuhro.Translit" Version="1.4.5" />
   </ItemGroup>
 
 </Project>

@@ -12,30 +12,33 @@ namespace SimplCommerce.Module.SampleData.Services
     {
         private readonly ISqlRepository _sqlRepository;
         private readonly IMediaService _mediaService;
+        private readonly IImportDataService _importDataService;
 
-        public SampleDataService(ISqlRepository sqlRepository, IMediaService mediaService)
+        public SampleDataService(ISqlRepository sqlRepository, IMediaService mediaService, IImportDataService importDataService)
         {
             _sqlRepository = sqlRepository;
             _mediaService = mediaService;
+            _importDataService = importDataService;
         }
 
         public async Task ResetToSampleData(SampleDataOption model)
         {
-            var usePostgres = _sqlRepository.GetDbConnectionType() == "Npgsql.NpgsqlConnection";
-            var useSQLite = _sqlRepository.GetDbConnectionType() == "Microsoft.Data.Sqlite.SqliteConnection";
-            var useMySql = _sqlRepository.GetDbConnectionType().Contains("MySql", System.StringComparison.InvariantCultureIgnoreCase);
-            var sampleContentFolder = Path.Combine(GlobalConfiguration.ContentRootPath, "Modules", "SimplCommerce.Module.SampleData", "SampleContent", model.Industry);
+            await _importDataService.Import();
+            // var usePostgres = _sqlRepository.GetDbConnectionType() == "Npgsql.NpgsqlConnection";
+            // var useSQLite = _sqlRepository.GetDbConnectionType() == "Microsoft.Data.Sqlite.SqliteConnection";
+            // var useMySql = _sqlRepository.GetDbConnectionType().Contains("MySql", System.StringComparison.InvariantCultureIgnoreCase);
+            // var sampleContentFolder = Path.Combine(GlobalConfiguration.ContentRootPath, "Modules", "SimplCommerce.Module.SampleData", "SampleContent", model.Industry);
 
-            var filePath = 
-                usePostgres ? Path.Combine(sampleContentFolder, "ResetToSampleData_Postgres.sql") :
-                useSQLite ? Path.Combine(sampleContentFolder, "ResetToSampleData_SQLite.sql") :
-                useMySql ? Path.Combine(sampleContentFolder, "ResetToSampleData_MySql.sql") :
-                Path.Combine(sampleContentFolder, "ResetToSampleData.sql");
-            var lines = File.ReadLines(filePath);
-            var commands = usePostgres || useSQLite || useMySql ? _sqlRepository.PostgresCommands(lines) : _sqlRepository.ParseCommand(lines);
-            _sqlRepository.RunCommands(commands);
+            // var filePath = 
+            //     usePostgres ? Path.Combine(sampleContentFolder, "ResetToSampleData_Postgres.sql") :
+            //     useSQLite ? Path.Combine(sampleContentFolder, "ResetToSampleData_SQLite.sql") :
+            //     useMySql ? Path.Combine(sampleContentFolder, "ResetToSampleData_MySql.sql") :
+            //     Path.Combine(sampleContentFolder, "ResetToSampleData.sql");
+            // var lines = File.ReadLines(filePath);
+            // var commands = usePostgres || useSQLite || useMySql ? _sqlRepository.PostgresCommands(lines) : _sqlRepository.ParseCommand(lines);
+            // _sqlRepository.RunCommands(commands);
 
-           await CopyImages(sampleContentFolder);
+            //await CopyImages(sampleContentFolder);
         }
 
         private async Task CopyImages(string sampleContentFolder)
